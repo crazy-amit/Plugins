@@ -123,6 +123,11 @@ async def allow_pm(client: Client, message: Message):
 
     await db.add_pmpermit(client.me.id, user_id)
     await hellbot.delete(message, f"**{Symbols.check_mark} Allowed:** {user_mention}")
+    prev_msg = PREV_MESSAGE.get(client.me.id, {}).get(message.from_user.id, None)
+    if prev_msg:
+        await prev_msg.delete()
+
+    PREV_MESSAGE[client.me.id] = {message.from_user.id: msg}
 
 
 @on_message(["disallow", "disapprove"], allow_stan=True)
